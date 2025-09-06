@@ -24,6 +24,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+      serverActions: true,
+    },
+  },
+  httpAgentOptions: {
+    keepAlive: true,
+  },
+  serverExternalPackages: ['node-fetch'],
 };
 
 export default nextConfig;

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useContext } from 'react';
-import { Minus, Plus, Trash2, X, ShoppingBag } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 
 import {
   Sheet,
@@ -10,11 +10,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetFooter,
-  SheetTrigger,
   SheetClose
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { AppContext } from '@/context/AppContext';
 import { Separator } from '../ui/separator';
 import { ScrollArea } from '../ui/scroll-area';

@@ -2,11 +2,13 @@
 
 import { useContext, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, Video } from 'lucide-react';
 import { AppContext } from '@/context/AppContext';
 import { Product } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { generateProductVideo } from '@/ai/flows/video-generation';
+import { Progress } from '@/components/ui/progress';
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -16,6 +18,9 @@ export function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const context = useContext(AppContext);
   const [quantity, setQuantity] = useState(1);
   const [viewedProducts, setViewedProducts] = useState<string[]>([]);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     // Record product view for AI recommendations
@@ -36,18 +41,68 @@ export function ProductDetailsClient({ product }: ProductDetailsClientProps) {
     addToCart(product, quantity);
   };
 
+  const handleGenerateVideo = async () => {
+    setIsVideoLoading(true);
+    setVideoUrl(null);
+    setProgress(0);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 95) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 500);
+
+    try {
+      const result = await generateProductVideo({
+        productDescription: `A cinematic shot of a ${product.name}. ${product.description}`,
+      });
+      if (result && result.video) {
+        setVideoUrl(result.video);
+      }
+    } catch (error) {
+      console.error('Failed to generate video:', error);
+    } finally {
+      clearInterval(interval);
+      setProgress(100);
+      setIsVideoLoading(false);
+    }
+  };
+
+
   return (
     <div className="container mx-auto px-4 md:px-6">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
         <div className="aspect-square relative bg-card rounded-lg overflow-hidden shadow-lg">
-          <Image
-            src={product.largeImage}
-            alt={product.name}
-            data-ai-hint={product.dataAiHint}
-            fill
-            className="object-cover"
-            priority
-          />
+          {videoUrl ? (
+            <video src={videoUrl} controls autoPlay className="w-full h-full object-cover" />
+          ) : (
+            <>
+            <Image
+              src={product.largeImage}
+              alt={product.name}
+              data-ai-hint={product.dataAiHint}
+              fill
+              className="object-cover"
+              priority
+            />
+             <div className="absolute bottom-4 right-4">
+                <Button onClick={handleGenerateVideo} disabled={isVideoLoading}>
+                  <Video className="mr-2 h-4 w-4" />
+                  {isVideoLoading ? 'Generating...' : 'Generate Video'}
+                </Button>
+              </div>
+            </>
+          )}
+           {isVideoLoading && (
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+                <Progress value={progress} className="w-3/4 mb-4" />
+                <p className="text-white">Generating video, this may take a minute...</p>
+              </div>
+            )}
         </div>
         <div className="flex flex-col justify-center">
           <Badge variant="outline" className="w-fit mb-2">{product.category}</Badge>
