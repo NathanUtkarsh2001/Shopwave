@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useContext } from 'react';
-import { Minus, Plus, Trash2, X } from 'lucide-react';
+import { Minus, Plus, Trash2, X, ShoppingBag } from 'lucide-react';
 
 import {
   Sheet,
