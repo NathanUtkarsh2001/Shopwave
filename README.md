@@ -3,7 +3,7 @@
 
 Welcome to ShopWave, a modern, feature-rich e-commerce application built with a cutting-edge tech stack. This project serves as a demonstration of building a responsive and interactive online store, complete with AI-powered features for a personalized shopping experience.
 
-![ShopWave Product Page](https://storage.googleapis.com/aip-dev-dev-395213.appspot.com/public/github.com/FirebaseExtended/codelab-genkit-nextjs-shopping-app/screenshot.png)
+![ShopWave Product Page](https://shopwave-ruby.vercel.app/)
 
 ## ✨ Key Features
 
